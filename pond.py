@@ -21,6 +21,7 @@ class fish:
         self.position_y = HEIGHT/2
         self.color = (255, 255, 255)
         self.radius = 5
+        self.life = 500
     
     def update(self):
         # self.velocity_x = self.genotype[0]
@@ -32,7 +33,7 @@ class fish:
         # self.position_x += self.velocity_x
         # self.position_y += self.velocity_y
         self.position_x += self.speed * np.cos(self.angle)
-        self.position_y += self.speed * np.sin(self.angle)
+        self.position_y -= self.speed * np.sin(self.angle)
         if self.position_x > WIDTH:
             self.angle = np.pi - self.angle
         if self.position_x < 0:
@@ -44,6 +45,20 @@ class fish:
 
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.position_x, self.position_y), self.radius)
+        # Triangle that show sight of the particle in angle direction
+        cone_radius = math.radians(60/2) 
+        rotation_radius = self.angle
+        cone_length = 50
+        x1 = self.position_x
+        y1 = self.position_y
+        x2 = self.position_x + cone_length * math.cos(cone_radius+rotation_radius)
+        y2 = self.position_y - cone_length * math.sin(cone_radius+rotation_radius)
+        x3 = self.position_x + cone_length * math.cos(-cone_radius+rotation_radius)
+        y3 = self.position_y - cone_length * math.sin(-cone_radius+rotation_radius)
+        cone_color = (110, 0, 0) 
+        pygame.draw.polygon(screen, cone_color, [(x1, y1), (x2, y2), (x3, y3)])
+        #pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
+        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life*0.2, 5))
 
 class Fish_pop:
     def __init__(self):
@@ -64,7 +79,7 @@ class Fish_pop:
         for f in self.fish:
             for mcnugget in food_positions:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<500:
-                    f.angle = math.atan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
+                    f.angle = - np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
                     f.speed = 3
 
     def eat_food(self, food):
@@ -75,6 +90,15 @@ class Fish_pop:
                     food_positions.remove(mcnugget)
                     food.remove_food(index)
                     f.speed = 1
+                    f.life += 100
+                    if f.life > 500:
+                        f.life = 500
+
+    def lose_life(self):
+        for f in self.fish:
+            f.life -= 1
+            if f.life <= 0:
+                self.fish.remove(f)
 
 
 class food_particle:
@@ -110,7 +134,7 @@ class Food:
         self.food_particles.pop(index)
 
     def spawn_food(self):
-        choice = random.choice([True, False])
+        choice = np.random.choice([True, False], p=[0.1, 0.9])
         if choice==True:
             self.food_particles.append(food_particle())
 
@@ -142,12 +166,13 @@ while running:
     population.draw()
     population.eat_food(food)
     population.check_food(food)
+    population.lose_life()
     
     food.draw()
     food.spawn_food()
 
     pygame.display.flip()
-    clock.tick(120) # FPS
+    clock.tick(30) # FPS
 
     iterations += 1
     if iterations >= 1000000:
