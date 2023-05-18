@@ -21,7 +21,9 @@ class fish:
         self.position_y = HEIGHT/2
         self.color = (255, 255, 255)
         self.radius = 5
-        self.life = 500
+        self.life = 100
+        self.stomach = 0
+        self.max_life = 100
     
     def update(self):
         # self.velocity_x = self.genotype[0]
@@ -58,7 +60,8 @@ class fish:
         cone_color = (110, 0, 0) 
         pygame.draw.polygon(screen, cone_color, [(x1, y1), (x2, y2), (x3, y3)])
         #pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
-        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life*0.2, 5))
+        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life, 5))
+        pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.stomach, 5))
 
 class Fish_pop:
     def __init__(self):
@@ -90,15 +93,22 @@ class Fish_pop:
                     food_positions.remove(mcnugget)
                     food.remove_food(index)
                     f.speed = 1
-                    f.life += 100
-                    if f.life > 500:
-                        f.life = 500
+                    f.stomach += 50
+                    if f.stomach > 100:
+                        f.stomach = 100
 
     def lose_life(self):
         for f in self.fish:
-            f.life -= 1
+            f.life -= 0.1
+            f.max_life -= 0.01
             if f.life <= 0:
                 self.fish.remove(f)
+
+    def digest(self):
+        for f in self.fish:
+            if f.stomach > 0 and f.life < f.max_life:
+                f.stomach -= 1
+                f.life += 0.5
 
 
 class food_particle:
@@ -167,6 +177,7 @@ while running:
     population.eat_food(food)
     population.check_food(food)
     population.lose_life()
+    population.digest()
     
     food.draw()
     food.spawn_food()
