@@ -20,7 +20,7 @@ class Food:
     def remove_food(self, index):
         self.food_particles.pop(index)
 
-    def spawn_food(self):
-        choice = np.random.choice([True, False], p=[0.1, 0.9])
+    def spawn_food(self, probability = 0.1):
+        choice = np.random.choice([True, False], p=[probability, 1-probability])
         if choice==True:
             self.food_particles.append(Food_particle())

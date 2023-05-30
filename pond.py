@@ -38,11 +38,13 @@ while running:
     population.draw(screen)
     population.eat_food(food)
     population.check_food(food)
+    population.eval_pop()
     population.lose_life()
     population.digest()
+    population.dead_born()
     
     food.draw(screen)
-    food.spawn_food()
+    food.spawn_food(probability=0.2)
 
     pygame.display.flip()
     clock.tick(30) # FPS
