@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 import math
 from models.Network import NN
+import random
 
 WIDTH = 800
 HEIGHT = 600
@@ -11,8 +12,8 @@ class Fish:
         self.genotype = weights
         self.speed = np.random.random()
         self.angle = np.random.random() * 2 * np.pi
-        self.position_x = WIDTH/2
-        self.position_y = HEIGHT/2
+        self.position_x = random.randint(0, WIDTH)
+        self.position_y = random.randint(0, HEIGHT)
         self.color = (255, 255, 255)
         self.radius = 5
         self.life = 100
