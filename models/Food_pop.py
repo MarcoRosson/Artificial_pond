@@ -1,7 +1,8 @@
 import numpy as np
 from models.Food_particle import Food_particle
+from config import *
 
-class Food:
+class Food_pop:
     def __init__(self):
         self.food_particles = []
         for _ in range(10):

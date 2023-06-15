@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from config import *
 
 class NN():
     def __init__(self, nodes: list):

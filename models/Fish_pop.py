@@ -1,12 +1,13 @@
 from models.Fish import Fish
 import numpy as np
+from config import *
 
 class Fish_pop:
     def __init__(self):
         self.fish = []
         self.born = 0
         self.dead = 0
-        for _ in range(20):
+        for _ in range(N_FISH):
             weights = [np.random.random() for _ in range(39)]
             self.fish.append(Fish(weights))
 

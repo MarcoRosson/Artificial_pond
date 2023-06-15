@@ -5,28 +5,24 @@ import pygame
 import random
 import math
 from models.Fish_pop import Fish_pop
-from models.Food import Food
+from models.Food_pop import Food_pop
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 import pygame_widgets
-
-WIDTH = 800
-HEIGHT = 600
+from config import *
 
 
 population = Fish_pop()
-food = Food()
+food = Food_pop()
 
 # Initialize Pygame
 pygame.init()
 
 # Set the screen size
-screen_width = WIDTH
-screen_height = HEIGHT
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-slider = Slider(screen, 30, 20, 200, 10, min=0, max=1, step=0.01, colour=(10, 200, 50))
+slider = Slider(screen, 30, 20, 200, 10, min=0, max=0.5, step=0.01, colour=(10, 200, 50), initial=FOOD_PROB)
 output = TextBox(screen, 230, 5, 40, 30, fontSize=20)
 output.disable()
 
@@ -51,13 +47,14 @@ while running:
     population.eval_pop()
     population.lose_life()
     population.digest()
-    population.dead_born()
+    if VERBOSE:
+        population.dead_born()
     
     food.draw(screen)
     food.spawn_food(probability=slider.getValue())
 
     pygame.display.flip()
-    clock.tick(30) # FPS
+    clock.tick(FPS) # FPS
 
     iterations += 1
     if iterations >= 1000000:

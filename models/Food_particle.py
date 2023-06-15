@@ -1,8 +1,6 @@
 import pygame
 import random
-
-WIDTH = 800
-HEIGHT = 600
+from config import *
 
 class Food_particle:
     def __init__(self):
