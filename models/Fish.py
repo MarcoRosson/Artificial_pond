@@ -22,9 +22,6 @@ class Fish:
         self.food_distance = 0
         self.food_angle = 0
 
-    def get_genotype(self):
-        return self.genotype
-
     def eval(self):
         inputs = [(self.food_distance/60), (self.food_angle/(2*math.pi)), (self.life/100), (self.speed/20), (self.angle/(2*math.pi))]
         outputs = self.NN.activate(inputs)
@@ -48,10 +45,11 @@ class Fish:
                 print("speed down")
                 print(self.speed)
         if choice == 4:
-            self.speed = 0
+            #self.speed = 0
             if VERBOSE:
-                print("stop")
+                print("nothing")
         self.speed = np.abs(self.speed)
+        self.angle = self.angle % (2*np.pi)
 
     def update_position(self):
         self.position_x += self.speed * np.cos(self.angle)
@@ -81,3 +79,18 @@ class Fish:
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
         pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life, 5))
         pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.stomach, 5))
+
+    def get_genotype(self, mutation=True):
+        if VERBOSE:
+            print("Old genotype:", self.genotype)
+        if mutation:
+            new_genotype = self.genotype
+            for i in range(len(self.genotype)):
+                choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
+                if choice:
+                    new_genotype[i] += np.random.normal(0, MUTATION_RATE)
+            if VERBOSE:
+                print("New genotype:", new_genotype)
+            return new_genotype
+        else:
+            return self.genotype

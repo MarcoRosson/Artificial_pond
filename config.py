@@ -1,18 +1,22 @@
 # Sets the width and height of the game window
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1000
+HEIGHT = 800
 
 # Set FPS
-FPS = 30
+FPS = 60
 
 # Set screen output
 VERBOSE = False
 
 # Set number of fish
-N_FISH = 10
+N_FISH = 50
 
 # Set food probability
-FOOD_PROB = 0.1
+FOOD_PROB = 0.2
+
+# Mutation
+MUTATION_RATE = 0.1
+MUTATION_PROB = 0.3
 
 # Set Test mode
 TEST = False

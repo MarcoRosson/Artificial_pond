@@ -40,13 +40,8 @@ while running:
     output.setText(slider.getValue())
 
     # Update and draw particles
-    population.update_position()
-    population.draw(screen)
-    population.eat_food(food)
-    population.check_food(food)
-    population.eval_pop()
-    population.lose_life()
-    population.digest()
+    population.fish_pop_step(screen, food)
+    
     if VERBOSE:
         population.dead_born()
     

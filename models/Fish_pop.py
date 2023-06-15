@@ -9,7 +9,25 @@ class Fish_pop:
         self.dead = 0
         for _ in range(N_FISH):
             weights = [np.random.random() for _ in range(39)]
+            for i, _ in enumerate(weights):
+                if np.random.random() < 0.5:
+                    weights[i] *= -1
             self.fish.append(Fish(weights))
+
+    def fish_pop_step(self, screen, food):
+        self.update_position()
+        self.draw(screen)
+        self.eat_food(food)
+        self.check_food(food)
+        self.eval_pop()
+        self.lose_life()
+        self.digest()
+        self.dead_born()
+        #self.check_reproduction()
+
+    def eval_pop(self):
+        for f in self.fish:
+            f.eval()
 
     def reproduce(self, weights):
         self.fish.append(Fish(weights))
@@ -31,12 +49,11 @@ class Fish_pop:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<3000:
                     f.food_angle = - np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
                     f.food_distance = np.sqrt((mcnugget[0]-f.position_x)**2 + (mcnugget[1]-f.position_y)**2)
-                
-            
 
-    def eval_pop(self):
+    def check_reproduction(self):
         for f in self.fish:
-            f.eval()
+            if f.stomach > 80 and f.life > 80:
+                self.reproduce(f.get_genotype())
 
     def eat_food(self, food):
         food_positions = food.get_positions()
