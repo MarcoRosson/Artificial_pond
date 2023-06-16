@@ -15,8 +15,8 @@ N_FISH = 50
 FOOD_PROB = 0.2
 
 # Mutation
-MUTATION_RATE = 0.1
-MUTATION_PROB = 0.3
+MUTATION_MAG = 0.1
+MUTATION_PROB = 0.6
 
 # Set Test mode
 TEST = False

@@ -9,6 +9,7 @@ class Food_particle:
         self.position_y = random.randint(0, HEIGHT)
         self.color = (0, 255, 0)
         self.radius = 3
+        self.life = 400
 
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, (self.position_x, self.position_y), self.radius)

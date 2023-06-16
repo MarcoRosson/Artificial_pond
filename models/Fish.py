@@ -6,13 +6,13 @@ import random
 from config import *
 
 class Fish:
-    def __init__(self, weights):
+    def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
         self.speed = np.random.random()
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
-        self.color = (255, 255, 255)
+        self.color = color
         self.radius = 5
         self.life = 100
         self.stomach = 0
@@ -21,9 +21,11 @@ class Fish:
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
+        self.gen = gen
+        self.eaten_food = 0
 
     def eval(self):
-        inputs = [(self.food_distance/60), (self.food_angle/(2*math.pi)), (self.life/100), (self.speed/20), (self.angle/(2*math.pi))]
+        inputs = [(self.food_distance/60), (self.food_angle/(2*math.pi)), ((self.life+(100-self.stomach))/200), (self.speed/20), (self.angle/(2*math.pi))]
         outputs = self.NN.activate(inputs)
         choice = np.argmax(outputs)
         if choice == 0:
@@ -88,9 +90,13 @@ class Fish:
             for i in range(len(self.genotype)):
                 choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
                 if choice:
-                    new_genotype[i] += np.random.normal(0, MUTATION_RATE)
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG)
             if VERBOSE:
                 print("New genotype:", new_genotype)
             return new_genotype
         else:
             return self.genotype
+        
+    def get_fitness(self):
+        fitness = self.life/100 + self.eaten_food/10
+        return fitness

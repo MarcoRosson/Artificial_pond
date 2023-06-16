@@ -25,3 +25,9 @@ class Food_pop:
         choice = np.random.choice([True, False], p=[probability, 1-probability])
         if choice==True:
             self.food_particles.append(Food_particle())
+
+    def remove_life_food(self):
+        for f in self.food_particles:
+            f.life -= 1
+            if f.life <= 0:
+                self.remove_food(self.food_particles.index(f))

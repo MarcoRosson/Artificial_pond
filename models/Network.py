@@ -31,7 +31,7 @@ class NN():
                 for k in range(self.nodes[i - 1]):
                     self.weights[i - 1][j][k] = weights[c]
                     c += 1
-        # print(c)
+        #print(c)
 
     def get_list_weights(self):
         wghts = []

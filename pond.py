@@ -22,7 +22,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-slider = Slider(screen, 30, 20, 200, 10, min=0, max=0.5, step=0.01, colour=(10, 200, 50), initial=FOOD_PROB)
+slider = Slider(screen, 30, 20, 200, 10, min=10, max=120, step=5, colour=(10, 200, 50), initial=FPS)
 output = TextBox(screen, 230, 5, 40, 30, fontSize=20)
 output.disable()
 
@@ -41,15 +41,18 @@ while running:
 
     # Update and draw particles
     population.fish_pop_step(screen, food)
+    food_prob = population.get_food_prob()
     
     if VERBOSE:
         population.dead_born()
     
     food.draw(screen)
-    food.spawn_food(probability=slider.getValue())
+    #food.spawn_food(probability=slider.getValue())
+    food.spawn_food(probability=food_prob)
+    food.remove_life_food()
 
     pygame.display.flip()
-    clock.tick(FPS) # FPS
+    clock.tick(slider.getValue()) # FPS
 
     iterations += 1
     if iterations >= 1000000:
