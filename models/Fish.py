@@ -29,20 +29,20 @@ class Fish:
         outputs = self.NN.activate(inputs)
         choice = np.argmax(outputs)
         if choice == 0:
-            self.angle += 0.5
+            self.angle += 0.1
             if VERBOSE:
                 print("left")
         if choice == 1:
-            self.angle -= 0.5
+            self.angle -= 0.1
             if VERBOSE:
                 print("right")
         if choice == 2:
-            self.speed += 0.5
+            self.speed += 0.1
             if VERBOSE:
                 print("speed up")
                 print(self.speed)   
         if choice == 3:
-            self.speed -= 0.5
+            self.speed -= 0.1
             if VERBOSE:
                 print("speed down")
                 print(self.speed)
@@ -50,7 +50,9 @@ class Fish:
             #self.speed = 0
             if VERBOSE:
                 print("nothing")
-        self.speed = np.abs(self.speed)
+        if self.speed < 0:
+            self.speed = 0
+        #self.speed = np.abs(self.speed)
         self.angle = self.angle % (2*np.pi)
 
     def update_position(self):
