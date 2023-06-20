@@ -1,6 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from config import *
+import math
+
+def sigmoid(x):
+  return 1 / (1 + math.exp(-x))
+
+def relu(x):
+    return max(0, x)
+
+def leaky_relu(x):
+    return max(0.01*x, x)
+
+def act_function(x):
+    if ACTIVATION_FUNCTION == "tanh":
+        return np.tanh(x)
+    elif ACTIVATION_FUNCTION == "sigmoid":
+        return sigmoid(x)
+    elif ACTIVATION_FUNCTION == "linear":
+        return x
+    elif ACTIVATION_FUNCTION == "relu":
+        return relu(x)
+    elif ACTIVATION_FUNCTION == "leaky_relu":
+        return leaky_relu(x)
 
 class NN():
     def __init__(self, nodes: list):
@@ -12,14 +34,14 @@ class NN():
         self.weights = [[] for _ in range(len(self.nodes) - 1)]
 
     def activate(self, inputs):
-        self.activations[0] = [np.tanh(inputs[i]) for i in range(self.nodes[0])]
+        self.activations[0] = [act_function(inputs[i]) for i in range(self.nodes[0])]
         for i in range(1, len(self.nodes)):
             self.activations[i] = [0. for _ in range(self.nodes[i])]
             for j in range(self.nodes[i]):
                 sum = 0  # self.weights[i - 1][j][0]
                 for k in range(self.nodes[i - 1]):
                     sum += self.activations[i - 1][k - 1] * self.weights[i - 1][j][k]
-                self.activations[i][j] = np.tanh(sum)
+                self.activations[i][j] = act_function(sum)
         return np.array(self.activations[-1])
 
     def set_weights(self, weights):

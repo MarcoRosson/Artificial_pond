@@ -66,13 +66,16 @@ class Fish_pop:
                     f.food_distance = np.sqrt((mcnugget[0]-f.position_x)**2 + (mcnugget[1]-f.position_y)**2)
 
     def check_reproduction(self):
-        best_fish = self.fish[0]
-        best_score = self.fish[0].get_fitness()
-        for f in self.fish:
-            if f.get_fitness() > best_score:
-                best_score = f.get_fitness()
-                best_fish = f
-        self.reproduce(best_fish.get_genotype(), best_fish.gen)
+        fishes = self.fish.copy()
+        for _ in range(OFFSPRING):
+            best_fish = fishes[0]
+            best_score = fishes[0].get_fitness()
+            for f in fishes:
+                if f.get_fitness() > best_score:
+                    best_score = f.get_fitness()
+                    best_fish = f
+            self.reproduce(best_fish.get_genotype(), best_fish.gen)
+            fishes.remove(best_fish)
 
         # new_list = []
         # # for f in self.fish:
@@ -99,7 +102,7 @@ class Fish_pop:
 
     def lose_life(self):
         for f in self.fish:
-            f.life -= (0.03*f.speed+0.1)
+            f.life -= (LIFE_LOSS_SPEED*f.speed+LIFE_LOSS)
             f.max_life -= 0.01
             if f.life <= 0:
                 self.fish.remove(f)
