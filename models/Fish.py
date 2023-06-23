@@ -8,50 +8,86 @@ from config import *
 class Fish:
     def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
-        self.speed = np.random.random()
+        self.speed = 2
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
-        self.radius = 5
-        self.life = 100
-        self.stomach = 0
-        self.max_life = 100
-        self.NN = NN([5, 3, 3, 5])
+        self.radius = 6
+        self.hunt_radius = 50
+        self.social_radius = 200
+        self.NN = NN([2,2,1])
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
         self.gen = gen
         self.eaten_food = 0
+        self.time_alive = 0 
+        self.fitness = 0
+        self.decisions = []
+        #self.life = 100
+        #self.stomach = 0
+        #self.max_life = 100
 
     def eval(self):
-        inputs = [(self.food_distance/60), (self.food_angle/(2*math.pi)), ((self.life+(100-self.stomach))/200), (self.speed/20), (self.angle/(2*math.pi))]
+
+        if self.food_distance < self.hunt_radius:        
+            Target = 1
+        else:
+            Target = 0
+
+        inputs = [Target, (self.food_angle-self.angle/(2*math.pi))] #(self.angle/(2*math.pi))
         outputs = self.NN.activate(inputs)
-        choice = np.argmax(outputs)
-        if choice == 0:
+        # print(outputs)
+        
+        # let's suppose outmin -1 and outmax 1
+        if outputs > -1 and outputs < -0.34:
             self.angle += 0.1
-            if VERBOSE:
-                print("left")
-        if choice == 1:
-            self.angle -= 0.1
+            self.decisions.append(1)
             if VERBOSE:
                 print("right")
-        if choice == 2:
-            self.speed += 0.1
+        elif outputs > -0.33 and outputs < 0.33:
+            self.angle = self.angle
+            self.decisions.append(3)
             if VERBOSE:
-                print("speed up")
-                print(self.speed)   
-        if choice == 3:
-            self.speed -= 0.1
+                print("continue")
+        elif outputs > 0.34 and outputs < 1:
+            self.angle -= 0.1
+            self.decisions.append(2)
             if VERBOSE:
-                print("speed down")
-                print(self.speed)
-        if choice == 4:
-            #self.speed = 0
-            if VERBOSE:
-                print("nothing")
-        if self.speed < 0:
-            self.speed = 0
+                print("left")
+        
+        # adjust fitness if fish is stuck in a loop
+        if len(self.decisions) == 500:
+            decisions = self.decisions
+            decisions = np.array(decisions)
+            #print(decisions)
+            diff_decisions = np.diff(decisions)
+            #print(diff_decisions)
+            if np.sum(diff_decisions) == 0:
+                self.fitness -= 1
+                self.fitness = max(0, self.fitness)
+                print('fit decreased', self.fitness)
+            
+            self.decisions = []
+
+
+        # choice = np.argmax(outputs)
+        # if choice == 0:
+        #     self.angle += 0.2
+        #     if VERBOSE:
+        #         print("right")
+        
+        # if choice == 1:
+        #     self.angle -= 0.2
+        #     if VERBOSE:
+        #         print("left")
+
+        # if choice == 2:
+        #     self.angle = self.angle
+        #     if VERBOSE:
+        #         print("continue")
+    
         #self.speed = np.abs(self.speed)
         self.angle = self.angle % (2*np.pi)
 
@@ -81,8 +117,14 @@ class Fish:
         cone_color = (110, 0, 0) 
         #pygame.draw.polygon(screen, cone_color, [(x1, y1), (x2, y2), (x3, y3)])
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
-        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life, 5))
-        pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.stomach, 5))
+        #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life, 5))
+        #pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.stomach, 5))
+        pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.eaten_food, 5))
+        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
+        
+        # For visualization
+        #pygame.draw.circle(screen,  (255, 0, 0), (self.position_x, self.position_y), self.hunt_radius, width = 1)
+        #pygame.draw.circle(screen,  (0, 0, 255), (self.position_x, self.position_y), self.social_radius, width = 1)
 
     def get_genotype(self, mutation=True):
         if VERBOSE:
@@ -98,7 +140,11 @@ class Fish:
             return new_genotype
         else:
             return self.genotype
-        
+    
+    # We should normalize the Fitness After
     def get_fitness(self):
-        fitness = self.life/100 + self.eaten_food/10
+
+        fitness = self.eaten_food # - ((self.time_alive+1)**2)/self.eaten_food
+        self.fitness = fitness 
+
         return fitness

@@ -9,24 +9,18 @@ FPS = 60
 VERBOSE = False
 
 # Set number of fish
-N_FISH = 50
+N_FISH = 20
+N_FOOD = 100
+
+# Set timer
+TIMER = 100
 
 # Set food probability
-FOOD_PROB = 0.2
-
-# Offspring
-OFFSPRING = 2
+#FOOD_PROB = 0.2
 
 # Mutation
-MUTATION_MAG = 0.05
-MUTATION_PROB = 0.2
-
-# Activation function
-ACTIVATION_FUNCTION = "tanh" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
-
-# Life Loss
-LIFE_LOSS = 0.08 # Life loss per frame
-LIFE_LOSS_SPEED = 0.05 # Life loss per speed
+MUTATION_MAG = 0.3
+MUTATION_PROB = 0.4
 
 # Set Test mode
 TEST = False
