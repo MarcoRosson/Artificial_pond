@@ -21,13 +21,8 @@ class Food_pop:
     def remove_food(self, index):
         self.food_particles.pop(index)
 
-    def spawn_food(self, probability = 0.1):
-        choice = np.random.choice([True, False], p=[probability, 1-probability])
-        if choice==True:
-            self.food_particles.append(Food_particle())
+    def spawn_food(self):
+        self.food_particles.append(Food_particle())
 
-    def remove_life_food(self):
-        for f in self.food_particles:
-            f.life -= 1
-            if f.life <= 0:
-                self.remove_food(self.food_particles.index(f))
+    def __len__(self):
+        return len(self.food_particles)

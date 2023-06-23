@@ -8,51 +8,37 @@ from config import *
 class Fish:
     def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
-        self.speed = np.random.random()
+        self.speed = 4
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
-        self.radius = 5
-        self.life = 100
-        self.stomach = 0
-        self.max_life = 100
-        self.NN = NN([5, 3, 3, 5])
+        self.radius = 6
+        self.NN = NN([2, 3, 3])
         self.NN.set_weights(self.genotype)
+        self.food_target = 0
         self.food_distance = 0
         self.food_angle = 0
         self.gen = gen
         self.eaten_food = 0
+        self.fitness = 0
+        self.decisions = []
 
     def eval(self):
-        inputs = [(self.food_distance/60), (self.food_angle/(2*math.pi)), ((self.life+(100-self.stomach))/200), (self.speed/20), (self.angle/(2*math.pi))]
+        inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
         outputs = self.NN.activate(inputs)
         choice = np.argmax(outputs)
         if choice == 0:
-            self.angle += 0.1
+            self.angle += ANGLE_MAG
             if VERBOSE:
                 print("left")
         if choice == 1:
-            self.angle -= 0.1
+            self.angle -= ANGLE_MAG
             if VERBOSE:
                 print("right")
         if choice == 2:
-            self.speed += 0.1
-            if VERBOSE:
-                print("speed up")
-                print(self.speed)   
-        if choice == 3:
-            self.speed -= 0.1
-            if VERBOSE:
-                print("speed down")
-                print(self.speed)
-        if choice == 4:
-            #self.speed = 0
             if VERBOSE:
                 print("nothing")
-        if self.speed < 0:
-            self.speed = 0
-        #self.speed = np.abs(self.speed)
         self.angle = self.angle % (2*np.pi)
 
     def update_position(self):
@@ -67,7 +53,7 @@ class Fish:
         if self.position_y < 0:
             self.angle = -self.angle
 
-    def draw(self, screen):
+    def draw(self, screen, total_food):
         pygame.draw.circle(screen, self.color, (self.position_x, self.position_y), self.radius)
         cone_radius = math.radians(60/2) 
         rotation_radius = self.angle
@@ -79,10 +65,9 @@ class Fish:
         x3 = self.position_x + cone_length * math.cos(-cone_radius+rotation_radius)
         y3 = self.position_y - cone_length * math.sin(-cone_radius+rotation_radius)
         cone_color = (110, 0, 0) 
-        #pygame.draw.polygon(screen, cone_color, [(x1, y1), (x2, y2), (x3, y3)])
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
-        pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 10, self.life, 5))
-        pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, self.stomach, 5))
+        pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, (self.eaten_food/total_food)*100, 5))
+        #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
 
     def get_genotype(self, mutation=True):
         if VERBOSE:
@@ -100,5 +85,9 @@ class Fish:
             return self.genotype
         
     def get_fitness(self):
-        fitness = self.life/100 + self.eaten_food/10
+        fitness = self.eaten_food # - ((self.time_alive+1)**2)/self.eaten_food
+        self.fitness = fitness 
         return fitness
+    
+    def get_eaten_food(self):
+        return self.eaten_food

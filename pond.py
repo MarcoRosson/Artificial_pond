@@ -15,6 +15,11 @@ from config import *
 population = Fish_pop()
 food = Food_pop()
 
+screen = None
+non_screen_iterations = REPRODUCTION_TIMER*300
+for _ in range(non_screen_iterations):
+    population.fish_pop_step(food, screen)
+
 # Initialize Pygame
 pygame.init()
 
@@ -22,7 +27,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-slider = Slider(screen, 30, 20, 200, 10, min=10, max=120, step=5, colour=(10, 200, 50), initial=FPS)
+slider = Slider(screen, 30, 20, 200, 10, min=10, max=240, step=5, colour=(10, 200, 50), initial=FPS)
 output = TextBox(screen, 230, 5, 40, 30, fontSize=20)
 output.disable()
 
@@ -40,23 +45,22 @@ while running:
     output.setText(slider.getValue())
 
     # Update and draw particles
-    population.fish_pop_step(screen, food)
-    food_prob = population.get_food_prob()
+    population.fish_pop_step(food, screen)
     
     if VERBOSE:
         population.dead_born()
     
     food.draw(screen)
-    #food.spawn_food(probability=slider.getValue())
-    food.spawn_food(probability=food_prob)
-    food.remove_life_food()
+
+    if len(food) < N_FOOD:
+        food.spawn_food()
 
     pygame.display.flip()
     clock.tick(slider.getValue()) # FPS
 
-    iterations += 1
-    if iterations >= 1000000:
-        running = False
+    # iterations += 1
+    # if iterations >= 1000000:
+    #     running = False
 
 # Quit Pygame
 pygame.quit()
