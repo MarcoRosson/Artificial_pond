@@ -9,10 +9,10 @@ FPS = 60
 VERBOSE = False
 
 # Set number of fish
-N_FISH = 25
+N_FISH = 20
 
 # Set number of food
-N_FOOD = 70
+N_FOOD = 80
 
 # Set food probability
 FOOD_PROB = 0.2
@@ -27,14 +27,14 @@ ANGLE_MAG = 0.2
 REPRODUCTION_TIMER = 1000
 
 # Parent selection
-PARENTS = 4
+# PARENTS = 3
 
-# Mutation
-MUTATION_MAG = 0.05
-MUTATION_PROB = 0.1
+# # Mutation
+# MUTATION_MAG = 0.05
+# MUTATION_PROB = 0.1
 
 # Activation function
-ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
+#ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
 
 # Life Loss
 LIFE_LOSS = 0.08 # Life loss per frame

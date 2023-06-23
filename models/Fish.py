@@ -8,13 +8,13 @@ from config import *
 class Fish:
     def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
-        self.speed = 4
+        self.speed = 10
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([2, 3, 3])
+        self.NN = NN([2, 1, 3])
         self.NN.set_weights(self.genotype)
         self.food_target = 0
         self.food_distance = 0
@@ -23,9 +23,13 @@ class Fish:
         self.eaten_food = 0
         self.fitness = 0
         self.decisions = []
+        self.MUTATION_PROB = float(self.read_config_file()['mutation_prob'])
+        self.MUTATION_MAG = float(self.read_config_file()['mutation_mag'])
 
     def eval(self):
-        inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
+        inputs = [self.food_distance/(HUNT_RADIUS*2), self.food_angle/(2*np.pi)]
+        if VERBOSE:
+            print("Inputs:", inputs)
         outputs = self.NN.activate(inputs)
         choice = np.argmax(outputs)
         if choice == 0:
@@ -75,9 +79,9 @@ class Fish:
         if mutation:
             new_genotype = self.genotype
             for i in range(len(self.genotype)):
-                choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
+                choice = np.random.choice([True, False], p=[self.MUTATION_PROB, 1-self.MUTATION_PROB])
                 if choice:
-                    new_genotype[i] += np.random.normal(0, MUTATION_MAG)
+                    new_genotype[i] += np.random.normal(0, self.MUTATION_MAG)
             if VERBOSE:
                 print("New genotype:", new_genotype)
             return new_genotype
@@ -91,3 +95,11 @@ class Fish:
     
     def get_eaten_food(self):
         return self.eaten_food
+    
+    def read_config_file(self):
+        config = {}
+        with open('config.txt', 'r') as file:
+            for line in file:
+                key, value = line.strip().split('=')
+                config[key] = value
+        return config

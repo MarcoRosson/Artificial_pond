@@ -3,6 +3,16 @@ import matplotlib.pyplot as plt
 from config import *
 import math
 
+def read_config_file():
+        config = {}
+        with open('config.txt', 'r') as file:
+            for line in file:
+                key, value = line.strip().split('=')
+                config[key] = value
+        return config
+
+ACTIVATION_FUNCTION = read_config_file()['activation_function']
+
 def sigmoid(x):
   return 1 / (1 + math.exp(-x))
 
@@ -23,6 +33,8 @@ def act_function(x):
         return relu(x)
     elif ACTIVATION_FUNCTION == "leaky_relu":
         return leaky_relu(x)
+    
+
 
 class NN():
     def __init__(self, nodes: list):

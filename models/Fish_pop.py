@@ -8,14 +8,15 @@ class Fish_pop:
         self.born = 0
         self.dead = 0
         self.count_timer = 0
+        self.PARENTS = int(self.read_config_file()['parents'])
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(15)]
+            weights = [np.random.random() for _ in range(25)]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
             self.fish_pop.append(Fish(weights))
 
-    def fish_pop_step(self, food, screen=None):
+    def fish_pop_step(self, food, screen=None, graph=None):
         self.update_position()
         if screen:
             self.draw(screen)
@@ -24,10 +25,16 @@ class Fish_pop:
         self.eval_pop()
         self.update_timer()
         if self.count_timer == 0:
+            print("food eaten: ", end="")
+            for f in self.fish_pop:
+                print(f.eaten_food, end=" ")
+            if graph:
+                fitness = [f.get_fitness() for f in self.fish_pop]
+                graph.add_gen(np.mean(fitness), np.max(fitness))
             self.replace_pop()
             generations = set([f.gen for f in self.fish_pop])
             print("Generation: ", generations)
-
+            
     def eval_pop(self):
         for f in self.fish_pop:
             f.eval()
@@ -68,7 +75,7 @@ class Fish_pop:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<HUNT_RADIUS**2:
                     distance = np.sqrt((mcnugget[0]-f.position_x)**2 + (mcnugget[1]-f.position_y)**2)
                     if distance < min_distance:
-                        f.food_angle = - np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
+                        f.food_angle = -np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
                         min_distance = distance
                     f.food_target = 1
             f.food_distance = min_distance
@@ -84,23 +91,46 @@ class Fish_pop:
 
     def rank_pop(self):
         ranked_pop = sorted(self.fish_pop, key=lambda x: x.get_fitness(), reverse=True)
-        return ranked_pop[:PARENTS]
+        return ranked_pop
     
+    # def replace_pop(self):
+    #     best_fishes = self.rank_pop()
+    #     new_pop = []
+    #     n_offspring = int(N_FISH/self.PARENTS)-self.PARENTS
+    #     for fish in best_fishes:
+    #         fish.eaten_food = 0
+    #         if VERBOSE:
+    #             print("Fish ", fish.get_genotype(mutation=False))
+    #         for _ in range(n_offspring):
+    #             weights = fish.get_genotype(mutation=True)
+    #             new_pop.append(Fish(weights, fish.color, fish.gen+1))
+    #     new_pop.extend(best_fishes)
+    #     new_pop.extend(best_fishes)
+    #     self.fish_pop = new_pop
+
     def replace_pop(self):
-        best_fishes = self.rank_pop()
+        new_fishes = self.rank_pop()
+        new_fishes = new_fishes[:-self.PARENTS]
+        best_fishes = new_fishes[:self.PARENTS]
         new_pop = []
-        n_offspring = int(N_FISH/PARENTS)-PARENTS
         for fish in best_fishes:
+            weights = fish.get_genotype(mutation=False)
+            new_pop.append(Fish(weights, fish.color, fish.gen+1))
+        new_pop.extend(new_fishes)
+        for fish in new_pop:
             fish.eaten_food = 0
-            if VERBOSE:
-                print("Fish ", fish.get_genotype(mutation=False))
-            for _ in range(n_offspring):
-                weights = fish.get_genotype(mutation=True)
-                new_pop.append(Fish(weights, fish.color, fish.gen+1))
-        new_pop.extend(best_fishes)
         self.fish_pop = new_pop
+
         
     def update_timer(self):
         self.count_timer += 1
         if self.count_timer >= REPRODUCTION_TIMER:
             self.count_timer = 0
+
+    def read_config_file(self):
+        config = {}
+        with open('config.txt', 'r') as file:
+            for line in file:
+                key, value = line.strip().split('=')
+                config[key] = value
+        return config
