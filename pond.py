@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import time
 import pygame
 import random
@@ -16,10 +15,11 @@ population = Fish_pop()
 food = Food_pop()
 
 screen = None
-non_screen_iterations = REPRODUCTION_TIMER*300
+non_screen_iterations = REPRODUCTION_TIMER * GEN_BEFORE_SCREEN
 for _ in range(non_screen_iterations):
     population.fish_pop_step(food, screen)
-
+    if len(food) < N_FOOD:
+        food.spawn_food()
 # Initialize Pygame
 pygame.init()
 
@@ -57,7 +57,6 @@ while running:
 
     pygame.display.flip()
     clock.tick(slider.getValue()) # FPS
-
     # iterations += 1
     # if iterations >= 1000000:
     #     running = False

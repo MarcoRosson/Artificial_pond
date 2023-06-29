@@ -60,6 +60,7 @@ class NN():
         for i in range(1, len(self.nodes)):
             for j in range(self.nodes[i]):
                 for k in range(self.nodes[i - 1]):
-                    wghts.append(np.abs(self.weights[i - 1][j][k]))
+                    # wghts.append(np.abs(self.weights[i - 1][j][k]))
+                    wghts.append(self.weights[i - 1][j][k])
         return wghts
 
