@@ -16,7 +16,8 @@ class Fish:
         self.radius = 6
         self.NN = NN([2,1])
         self.NN.set_weights(self.genotype)
-        self.food_target = 0
+        self.target_on = 0
+        self.current_target = [0,0]
         self.food_distance = 0
         self.food_angle = 0
         self.gen = gen
@@ -30,17 +31,18 @@ class Fish:
         outputs = self.NN.activate(inputs)
 
         if inputs[1] != 0 or inputs[0] != 0:
-            self.decisions.append(outputs[0] - (inputs[1]-inputs[0]))
+            self.decisions.append((outputs[0] - (inputs[1]-inputs[0])))
         else:
             self.decisions.append(99)
     
-        self.angle += outputs[0]
+        self.angle += outputs[0]/ANGLE_MAG
         self.angle = self.angle % (2*np.pi)
 
         self.fitness = abs(sum(self.decisions)/len(self.decisions))
-        print("\nfitness: ", self.fitness, " angle: ", inputs[0], " output: " , outputs[0], "food_angle: ", inputs[1])
-        # print("\nfitness: ", self.fitness, " angle: ", inputs[0], " output: " , outputs[0])
-        print("\nweights: ", self.genotype)
+       
+        # print("\nfitness: ", self.fitness, " angle: ", inputs[0], " output: " , outputs[0], "food_angle: ", inputs[1])
+        # print("\nweights: ", self.genotype)
+
         self.update_position()
             
 

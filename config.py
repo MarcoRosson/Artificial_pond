@@ -4,7 +4,7 @@ HEIGHT = 800
 
 # Set FPS
 FPS = 60
-GEN_BEFORE_SCREEN = 300
+GEN_BEFORE_SCREEN = 100
 
 # Set screen output
 VERBOSE = False
@@ -25,17 +25,17 @@ SPEED = 1
 DECISIONS = 50
 
 # Angle magnitude
-ANGLE_MAG = 1.2
+ANGLE_MAG = 10 # this will work as INERTIA
 
 # Set reproduction timer
-REPRODUCTION_TIMER = 300
+REPRODUCTION_TIMER = 100
 
 # Parent selection
-PARENTS = 1
+PARENTS = 10
 
 # Mutation
 MUTATION_MAG = 0.1
-MUTATION_PROB = 0.3
+MUTATION_PROB = 0.5
 
 # Activation function
 ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"

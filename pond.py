@@ -62,4 +62,3 @@ while running:
     #     running = False
 
 # Quit Pygame
-pygame.quit()
