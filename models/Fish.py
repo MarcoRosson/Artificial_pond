@@ -73,11 +73,14 @@ class Fish:
         if VERBOSE:
             print("Old genotype:", self.genotype)
         if mutation:
-            new_genotype = self.genotype
-            for i in range(len(self.genotype)):
-                choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
-                if choice:
-                    new_genotype[i] += np.random.normal(0, MUTATION_MAG)
+            genes_to_mutate = int(len(self.genotype) * MUTATION_PROB)
+            new_genotype = self.genotype.copy()
+            possible_choices = np.arange(len(self.genotype))
+            final_choice = random.sample(list(possible_choices), genes_to_mutate)
+                
+            for i in iter(final_choice):
+                #choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
+                new_genotype[i] += np.random.normal(0, MUTATION_MAG)
             if VERBOSE:
                 print("New genotype:", new_genotype)
             return new_genotype

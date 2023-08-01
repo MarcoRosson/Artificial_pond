@@ -89,18 +89,29 @@ class Fish_pop:
     def replace_pop(self, graph=None):
         best_fishes = self.rank_pop()
 
+        for fish in best_fishes:
+            print("Fish ", fish.get_genotype(mutation=False))
+            print("Fitness: ", fish.get_fitness())
+            print("---")
+        
+        print("----------------")
+
         if graph:
             fitness_for_graph = [f.get_fitness() for f in best_fishes]
             graph.add_gen(np.mean(fitness_for_graph), np.max(fitness_for_graph))
             
         new_pop = []
-        n_offspring = int(N_FISH/PARENTS)-PARENTS
+        n_offspring_tot = int(N_FISH-PARENTS)
+        n_offspring = int(n_offspring_tot/PARENTS)
+        print('n_offsprings: ',n_offspring)
+
         for fish in best_fishes:
             fish.eaten_food = 0
             if VERBOSE:
                 print("Fish ", fish.get_genotype(mutation=False))
             for _ in range(n_offspring):
                 weights = fish.get_genotype(mutation=True)
+                #print("Weights: ", weights)
                 new_pop.append(Fish(weights, fish.color, fish.gen+1))
         new_pop.extend(best_fishes)
         self.fish_pop = new_pop

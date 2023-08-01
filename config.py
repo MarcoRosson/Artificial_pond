@@ -30,11 +30,12 @@ REPRODUCTION_TIMER = 1000
 GEN_BEFORE_SCREEN = 100
 
 # Parent selection
-PARENTS = 4
+PARENTS = 5
 
 # Mutation
-MUTATION_MAG = 0.05
-MUTATION_PROB = 0.1
+MUTATION_MAG = 0.2
+MUTATION_PROB = 0.4
+#GENES_TO_MUTATE = 5
 
 # Activation function
 ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
