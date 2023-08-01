@@ -14,7 +14,7 @@ class Fish:
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([2, 3, 3])
+        self.NN = NN([2, 1])
         self.NN.set_weights(self.genotype)
         self.food_target = 0
         self.food_distance = 0
@@ -25,21 +25,31 @@ class Fish:
         self.decisions = []
 
     def eval(self):
-        inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
+        #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
+        inputs = [self.angle, self.food_angle]
         outputs = self.NN.activate(inputs)
-        choice = np.argmax(outputs)
-        if choice == 0:
-            self.angle += ANGLE_MAG
-            if VERBOSE:
-                print("left")
-        if choice == 1:
-            self.angle -= ANGLE_MAG
-            if VERBOSE:
-                print("right")
-        if choice == 2:
-            if VERBOSE:
-                print("nothing")
+        # choice = np.argmax(outputs)
+        # if choice == 0:
+        #     self.angle += ANGLE_MAG
+        #     if VERBOSE:
+        #         print("left")
+        # if choice == 1:
+        #     self.angle -= ANGLE_MAG
+        #     if VERBOSE:
+        #         print("right")
+        # if choice == 2:
+        #     if VERBOSE:
+        #         print("nothing")
+        # self.angle = self.angle % (2*np.pi)
+        if inputs[1] != 0 or inputs[0] != 0:
+            self.decisions.append((outputs[0] - (inputs[1]-inputs[0])))
+        else:
+            self.decisions.append(99)
+    
+        self.angle += outputs[0]/ANGLE_MAG 
         self.angle = self.angle % (2*np.pi)
+
+        self.fitness = abs(sum(self.decisions)/len(self.decisions))
 
     def update_position(self):
         self.position_x += self.speed * np.cos(self.angle)

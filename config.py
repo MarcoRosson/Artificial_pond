@@ -27,14 +27,14 @@ ANGLE_MAG = 0.2
 REPRODUCTION_TIMER = 1000
 
 # Set generations before screen
-GEN_BEFORE_SCREEN = 100
+GEN_BEFORE_SCREEN = 20
 
 # Parent selection
 PARENTS = 5
 
 # Mutation
-MUTATION_MAG = 0.2
-MUTATION_PROB = 0.4
+MUTATION_MAG = 0.1
+MUTATION_PROB = 0.5
 #GENES_TO_MUTATE = 5
 
 # Activation function

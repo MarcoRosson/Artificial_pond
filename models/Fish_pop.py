@@ -9,7 +9,7 @@ class Fish_pop:
         self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(15)]
+            weights = [np.random.random() for _ in range(2)]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
@@ -103,7 +103,6 @@ class Fish_pop:
         new_pop = []
         n_offspring_tot = int(N_FISH-PARENTS)
         n_offspring = int(n_offspring_tot/PARENTS)
-        print('n_offsprings: ',n_offspring)
 
         for fish in best_fishes:
             fish.eaten_food = 0
