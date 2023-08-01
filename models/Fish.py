@@ -14,7 +14,7 @@ class Fish:
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([2, 1])
+        self.NN = NN([3, 2, 1])
         self.NN.set_weights(self.genotype)
         self.food_target = 0
         self.food_distance = 0
@@ -26,7 +26,7 @@ class Fish:
 
     def eval(self):
         #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
-        inputs = [self.angle, self.food_angle]
+        inputs = [self.food_distance/HUNT_RADIUS ,self.angle, self.food_angle]
         outputs = self.NN.activate(inputs)
         # choice = np.argmax(outputs)
         # if choice == 0:
@@ -52,8 +52,6 @@ class Fish:
         self.fitness = abs(sum(self.decisions)/len(self.decisions))
 
     def update_position(self):
-        self.position_x += self.speed * np.cos(self.angle)
-        self.position_y -= self.speed * np.sin(self.angle)
         if self.position_x > WIDTH:
             self.angle = np.pi - self.angle
         if self.position_x < 0:
@@ -62,6 +60,8 @@ class Fish:
             self.angle = -self.angle
         if self.position_y < 0:
             self.angle = -self.angle
+        self.position_x += self.speed * np.cos(self.angle)
+        self.position_y -= self.speed * np.sin(self.angle)
 
     def draw(self, screen, total_food):
         pygame.draw.circle(screen, self.color, (self.position_x, self.position_y), self.radius)
