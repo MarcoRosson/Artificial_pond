@@ -14,7 +14,7 @@ class Fish:
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([2,1])
+        self.NN = NN([2,2,1])
         self.NN.set_weights(self.genotype)
         self.target_on = 0
         self.current_target = [0,0]
@@ -38,7 +38,7 @@ class Fish:
         self.angle += outputs[0]/ANGLE_MAG
         self.angle = self.angle % (2*np.pi)
 
-        self.fitness = abs(sum(self.decisions)/len(self.decisions))
+        self.fitness += abs(sum(self.decisions)/len(self.decisions))
        
         # print("\nfitness: ", self.fitness, " angle: ", inputs[0], " output: " , outputs[0], "food_angle: ", inputs[1])
         # print("\nweights: ", self.genotype)
@@ -95,7 +95,11 @@ class Fish:
         
     def get_fitness(self):
         # self.fitness = sum(self.decisions) / (len(self.decisions)+1) # - ((self.time_alive+1)**2)/self.eaten_food
-        return self.fitness
+        return (self.fitness*(1+0.5/(self.eaten_food+1)))
+        #return self.fitness
     
     def get_eaten_food(self):
         return self.eaten_food
+    
+    def eat_food(self):
+        self.eaten_food += 1
