@@ -15,7 +15,7 @@ class Fish_pop:
                     weights[i] *= -1
             self.fish_pop.append(Fish(weights))
 
-    def fish_pop_step(self, food, screen=None):
+    def fish_pop_step(self, food, screen=None, graph=None):
         self.update_position()
         if screen:
             self.draw(screen)
@@ -24,7 +24,7 @@ class Fish_pop:
         self.eval_pop()
         self.update_timer()
         if self.count_timer == 0:
-            self.replace_pop()
+            self.replace_pop(graph)
             generations = set([f.gen for f in self.fish_pop])
             print("Generation: ", generations)
 
@@ -86,8 +86,13 @@ class Fish_pop:
         ranked_pop = sorted(self.fish_pop, key=lambda x: x.get_fitness(), reverse=True)
         return ranked_pop[:PARENTS]
     
-    def replace_pop(self):
+    def replace_pop(self, graph=None):
         best_fishes = self.rank_pop()
+
+        if graph:
+            fitness_for_graph = [f.get_fitness() for f in best_fishes]
+            graph.add_gen(np.mean(fitness_for_graph), np.max(fitness_for_graph))
+            
         new_pop = []
         n_offspring = int(N_FISH/PARENTS)-PARENTS
         for fish in best_fishes:

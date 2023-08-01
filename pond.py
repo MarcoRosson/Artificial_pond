@@ -10,15 +10,22 @@ from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 import pygame_widgets
 from config import *
+from models.Graphs import Graph
 
 
 population = Fish_pop()
 food = Food_pop()
 
+graph = Graph()
+
 screen = None
-non_screen_iterations = REPRODUCTION_TIMER*300
+non_screen_iterations = REPRODUCTION_TIMER * GEN_BEFORE_SCREEN
 for _ in range(non_screen_iterations):
-    population.fish_pop_step(food, screen)
+    population.fish_pop_step(food, screen, graph)
+    if len(food) < N_FOOD:
+        food.spawn_food()
+        
+graph.save_graph_jpg("graph")
 
 # Initialize Pygame
 pygame.init()

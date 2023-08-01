@@ -26,6 +26,9 @@ ANGLE_MAG = 0.2
 # Set reproduction timer
 REPRODUCTION_TIMER = 1000
 
+# Set generations before screen
+GEN_BEFORE_SCREEN = 100
+
 # Parent selection
 PARENTS = 4
 
