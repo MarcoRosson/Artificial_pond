@@ -25,7 +25,7 @@ for _ in range(non_screen_iterations):
     if len(food) < N_FOOD:
         food.spawn_food()
         
-graph.save_graph_jpg("graph")
+graph.save_graph_jpg("graph_crossover_2")
 
 # Initialize Pygame
 pygame.init()

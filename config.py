@@ -27,15 +27,18 @@ ANGLE_MAG = 0.2
 REPRODUCTION_TIMER = 1000
 
 # Set generations before screen
-GEN_BEFORE_SCREEN = 15
+GEN_BEFORE_SCREEN = 20
 
 # Parent selection
 PARENTS = 5
 
 # Mutation
 MUTATION_MAG = 0.1
-MUTATION_PROB = 0.5
+MUTATION_PROB = 0.3
 #GENES_TO_MUTATE = 5
+
+# Crossover
+CROSSOVER = True
 
 # Activation function
 ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
