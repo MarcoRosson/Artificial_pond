@@ -47,6 +47,10 @@ ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_rel
 LIFE_LOSS = 0.08 # Life loss per frame
 LIFE_LOSS_SPEED = 0.05 # Life loss per speed
 
+# Neighborhood 
+NEIGHBORHOOD_TYPE = "local" # "global", "local"
+NEIGHBORHOOD_RADIUS = 300
+
 # Set Test mode
 TEST = False
 if TEST:

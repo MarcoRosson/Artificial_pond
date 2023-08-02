@@ -9,7 +9,7 @@ class Fish_pop:
         self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(8)]
+            weights = [np.random.random() for _ in range(12)]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
@@ -21,6 +21,7 @@ class Fish_pop:
             self.draw(screen)
         self.eat_food(food)
         self.check_food(food)
+        self.check_neighborhood()
         self.eval_pop()
         self.update_timer()
         if self.count_timer == 0:
@@ -62,7 +63,6 @@ class Fish_pop:
     def check_food(self, food):
         food_positions = food.get_positions()
         for f in self.fish_pop:
-            f.food_target = -1
             min_distance = HUNT_RADIUS*2
             for mcnugget in food_positions:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<HUNT_RADIUS**2:
@@ -70,7 +70,6 @@ class Fish_pop:
                     if distance < min_distance:
                         f.food_angle = - np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
                         min_distance = distance
-                    f.food_target = 1
             f.food_distance = min_distance
 
     def eat_food(self, food):
@@ -137,6 +136,11 @@ class Fish_pop:
                 # print("---")
         new_pop.extend(best_fishes)
         self.fish_pop = new_pop
+
+
+    def check_neighborhood(self):
+        for f in self.fish_pop:
+            f.check_neighborhood(self.fish_pop)
         
     def update_timer(self):
         self.count_timer += 1
