@@ -23,6 +23,7 @@ class Fish:
         self.fitness = 0
         self.decisions = []
         self.center_neighborhood_angle = 0
+        self.align_neighborhood_angle = 0
 
     def eval(self):
         #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
@@ -77,6 +78,7 @@ class Fish:
         cone_color = (110, 0, 0) 
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
         pygame.draw.line(screen, (255,0,0), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.center_neighborhood_angle), self.position_y - 50 * math.sin(self.center_neighborhood_angle)))
+        pygame.draw.line(screen, (0, 0, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.align_neighborhood_angle), self.position_y - 50 * math.sin(self.align_neighborhood_angle)))
         pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, (self.eaten_food/total_food)*100, 5))
         #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
 
@@ -99,31 +101,41 @@ class Fish:
             return self.genotype
         
     def check_neighborhood(self, fish_pop):
-        if NEIGHBORHOOD_TYPE == 'global':
+        if NEIGHBORHOOD_TYPE_CENTER == 'global':
             global_position_x = 0
             global_position_y = 0
+            global_angle = 0
             for f in fish_pop:
                 global_position_x += f.position_x
                 global_position_y += f.position_y
+                global_angle += f.angle
             global_position_x /= len(fish_pop)
             global_position_y /= len(fish_pop)
+            global_angle /= len(fish_pop)
             self.center_neighborhood_angle = - np.arctan2(global_position_y-self.position_y, global_position_x-self.position_x)
-        elif NEIGHBORHOOD_TYPE == 'local':
+            self.align_neighborhood_angle = global_angle
+
+        elif NEIGHBORHOOD_TYPE_CENTER == 'local':
             neighborhood_fish = []
             for f in fish_pop:
-                if ((f.position_x-self.position_x)**2 + (f.position_y-self.position_y)**2)<NEIGHBORHOOD_RADIUS**2:
+                if ((f.position_x-self.position_x)**2 + (f.position_y-self.position_y)**2)<NEIGHBORHOOD_RADIUS_CENTER**2:
                     neighborhood_fish.append(f)
             if len(neighborhood_fish) > 0:
                 neighborhood_position_x = 0
                 neighborhood_position_y = 0
+                neighborhood_angle = 0
                 for f in neighborhood_fish:
                     neighborhood_position_x += f.position_x
                     neighborhood_position_y += f.position_y
+                    neighborhood_angle += f.angle
                 neighborhood_position_x /= len(neighborhood_fish)
                 neighborhood_position_y /= len(neighborhood_fish)
+                neighborhood_angle /= len(neighborhood_fish)
                 self.center_neighborhood_angle = - np.arctan2(neighborhood_position_y-self.position_y, neighborhood_position_x-self.position_x)
+                self.align_neighborhood_angle = neighborhood_angle
             else:
                 self.center_neighborhood_angle = 0
+                self.align_neighborhood_angle = 0
         
     def get_fitness(self):
         fitness = self.eaten_food # - ((self.time_alive+1)**2)/self.eaten_food

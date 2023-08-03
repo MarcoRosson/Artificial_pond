@@ -64,6 +64,7 @@ class Fish_pop:
         food_positions = food.get_positions()
         for f in self.fish_pop:
             min_distance = HUNT_RADIUS*2
+            f.food_angle = f.angle
             for mcnugget in food_positions:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<HUNT_RADIUS**2:
                     distance = np.sqrt((mcnugget[0]-f.position_x)**2 + (mcnugget[1]-f.position_y)**2)

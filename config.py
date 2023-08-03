@@ -18,7 +18,7 @@ N_FOOD = 70
 FOOD_PROB = 0.2
 
 # Hunt radius
-HUNT_RADIUS = 100
+HUNT_RADIUS = 1000
 
 # Angle magnitude
 ANGLE_MAG = 0.2
@@ -47,9 +47,13 @@ ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_rel
 LIFE_LOSS = 0.08 # Life loss per frame
 LIFE_LOSS_SPEED = 0.05 # Life loss per speed
 
-# Neighborhood 
-NEIGHBORHOOD_TYPE = "local" # "global", "local"
-NEIGHBORHOOD_RADIUS = 300
+# Neighborhood Center
+NEIGHBORHOOD_TYPE_CENTER = "local" # "global", "local"
+NEIGHBORHOOD_RADIUS_CENTER = 300
+
+# Neighborhood Angle
+NEIGHBORHOOD_TYPE_ANGLE = "local" # "global", "local"
+NEIGHBORHOOD_RADIUS_ANGLE = 200
 
 # Set Test mode
 TEST = False
