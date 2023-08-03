@@ -18,7 +18,7 @@ N_FOOD = 70
 FOOD_PROB = 0.2
 
 # Hunt radius
-HUNT_RADIUS = 1000
+HUNT_RADIUS = 300
 
 # Angle magnitude
 ANGLE_MAG = 0.2
@@ -27,14 +27,14 @@ ANGLE_MAG = 0.2
 REPRODUCTION_TIMER = 1000
 
 # Set generations before screen
-GEN_BEFORE_SCREEN = 20
+GEN_BEFORE_SCREEN = 40
 
 # Parent selection
 PARENTS = 5
 
 # Mutation
 MUTATION_MAG = 0.1
-MUTATION_PROB = 0.3
+MUTATION_PROB = 0.2
 #GENES_TO_MUTATE = 5
 
 # Crossover

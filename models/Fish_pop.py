@@ -9,7 +9,7 @@ class Fish_pop:
         self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(12)]
+            weights = [np.random.random() for _ in range(30)]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
@@ -25,6 +25,7 @@ class Fish_pop:
         self.eval_pop()
         self.update_timer()
         if self.count_timer == 0:
+            food.respawn_food()
             self.replace_pop(graph)
             generations = set([f.gen for f in self.fish_pop])
             print("Generation: ", generations)
@@ -125,6 +126,7 @@ class Fish_pop:
 
         for fish in best_fishes:
             fish.eaten_food = 0
+            fish.penalty = 0
             if VERBOSE:
                 print("Fish ", fish.get_genotype(mutation=False))
             for _ in range(n_offspring):

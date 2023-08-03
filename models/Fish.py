@@ -8,13 +8,13 @@ from config import *
 class Fish:
     def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
-        self.speed = 4
+        self.speed = 3
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([3, 3, 1])
+        self.NN = NN([4, 3, 3, 3])
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
@@ -24,43 +24,50 @@ class Fish:
         self.decisions = []
         self.center_neighborhood_angle = 0
         self.align_neighborhood_angle = 0
+        self.distance_from_boundaries = 0 
+        self.penalty = 0
 
     def eval(self):
         #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
-        inputs = [self.angle, self.food_angle, self.center_neighborhood_angle]
+        self.get_distance_from_boundaries()
+        inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
         outputs = self.NN.activate(inputs)
-        # choice = np.argmax(outputs)
-        # if choice == 0:
-        #     self.angle += ANGLE_MAG
-        #     if VERBOSE:
-        #         print("left")
-        # if choice == 1:
-        #     self.angle -= ANGLE_MAG
-        #     if VERBOSE:
-        #         print("right")
-        # if choice == 2:
-        #     if VERBOSE:
-        #         print("nothing")
-        # self.angle = self.angle % (2*np.pi)
-        if inputs[1] != 0 or inputs[0] != 0:
-            self.decisions.append((outputs[0] - (inputs[1]-inputs[0])))
-        else:
-            self.decisions.append(99)
-    
-        self.angle += outputs[0]/ANGLE_MAG 
+        choice = np.argmax(outputs)
+        if choice == 0:
+            self.angle += ANGLE_MAG
+            if VERBOSE:
+                print("left")
+        if choice == 1:
+            self.angle -= ANGLE_MAG
+            if VERBOSE:
+                print("right")
+        if choice == 2:
+            if VERBOSE:
+                print("nothing")
         self.angle = self.angle % (2*np.pi)
+        # if inputs[1] != 0 or inputs[0] != 0:
+        #     self.decisions.append((outputs[0] - (inputs[1]-inputs[0])))
+        # else:
+        #     self.decisions.append(99)
+    
+        # self.angle += outputs[0]/ANGLE_MAG 
+        # self.angle = self.angle % (2*np.pi)
 
-        self.fitness = abs(sum(self.decisions)/len(self.decisions))
+        # self.fitness = abs(sum(self.decisions)/len(self.decisions))
 
     def update_position(self):
         if self.position_x > WIDTH:
             self.angle = np.pi - self.angle
+            self.penalty += 1
         if self.position_x < 0:
             self.angle = np.pi - self.angle
+            self.penalty += 1
         if self.position_y > HEIGHT:
             self.angle = -self.angle
+            self.penalty += 1
         if self.position_y < 0:
             self.angle = -self.angle
+            self.penalty += 1
         self.position_x += self.speed * np.cos(self.angle)
         self.position_y -= self.speed * np.sin(self.angle)
 
@@ -136,9 +143,25 @@ class Fish:
             else:
                 self.center_neighborhood_angle = 0
                 self.align_neighborhood_angle = 0
+
+    def get_distance_from_boundaries(self):
+        distance = 0
+        if self.position_x > WIDTH:
+            distance += self.position_x - WIDTH
+        if self.position_x < 0:
+            distance += self.position_x
+        if self.position_y > HEIGHT:
+            distance += self.position_y - HEIGHT
+        if self.position_y < 0:
+            distance += self.position_y
+        if distance < 40:
+            self.distance_from_boundaries = distance/40
+        else:
+            self.distance_from_boundaries = 2
+
         
     def get_fitness(self):
-        fitness = self.eaten_food # - ((self.time_alive+1)**2)/self.eaten_food
+        fitness = self.eaten_food
         self.fitness = fitness 
         return fitness
     
