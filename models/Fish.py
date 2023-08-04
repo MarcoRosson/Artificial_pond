@@ -14,7 +14,7 @@ class Fish:
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([3, 3, 3, 3])
+        self.NN = NN([3, 3, 3])
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
