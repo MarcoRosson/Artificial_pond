@@ -25,7 +25,7 @@ for _ in range(non_screen_iterations):
     if len(food) < N_FOOD:
         food.spawn_food()
         
-graph.save_graph_jpg("graph_distance_social")
+graph.save_graph_jpg("graph_final")
 
 # Initialize Pygame
 pygame.init()

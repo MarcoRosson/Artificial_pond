@@ -14,7 +14,7 @@ class Fish:
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([4, 3, 3, 3])
+        self.NN = NN([3, 3, 3, 3])
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
@@ -30,7 +30,7 @@ class Fish:
     def eval(self):
         #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
         self.get_distance_from_boundaries()
-        inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
+        inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]#, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
         outputs = self.NN.activate(inputs)
         choice = np.argmax(outputs)
         if choice == 0:
@@ -84,8 +84,8 @@ class Fish:
         y3 = self.position_y - cone_length * math.sin(-cone_radius+rotation_radius)
         cone_color = (110, 0, 0) 
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
-        pygame.draw.line(screen, (255,0,0), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.center_neighborhood_angle), self.position_y - 50 * math.sin(self.center_neighborhood_angle)))
-        pygame.draw.line(screen, (0, 0, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.align_neighborhood_angle), self.position_y - 50 * math.sin(self.align_neighborhood_angle)))
+        # pygame.draw.line(screen, (255,0,0), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.center_neighborhood_angle), self.position_y - 50 * math.sin(self.center_neighborhood_angle)))
+        # pygame.draw.line(screen, (0, 0, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.align_neighborhood_angle), self.position_y - 50 * math.sin(self.align_neighborhood_angle)))
         pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, (self.eaten_food/total_food)*100, 5))
         #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
 
@@ -93,6 +93,7 @@ class Fish:
         if VERBOSE:
             print("Old genotype:", self.genotype)
         if mutation:
+            self.get_fitness()
             genes_to_mutate = int(len(self.genotype) * MUTATION_PROB)
             new_genotype = self.genotype.copy()
             possible_choices = np.arange(len(self.genotype))
@@ -100,7 +101,20 @@ class Fish:
                 
             for i in iter(final_choice):
                 #choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
-                new_genotype[i] += np.random.normal(0, MUTATION_MAG)
+                if self.fitness > 20:
+                    pass
+                if self.fitness > 18:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG/40)
+                if self.fitness > 16:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG/30)
+                if self.fitness > 14:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG/20)
+                if self.fitness > 12:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG/10)
+                if self.fitness > 10:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG/5)
+                else:
+                    new_genotype[i] += np.random.normal(0, MUTATION_MAG)
             if VERBOSE:
                 print("New genotype:", new_genotype)
             return new_genotype

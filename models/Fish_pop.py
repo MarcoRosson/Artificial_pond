@@ -9,7 +9,7 @@ class Fish_pop:
         self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(30)]
+            weights = [np.random.random() for _ in range(27)]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
@@ -78,7 +78,7 @@ class Fish_pop:
         food_positions = food.get_positions()
         for f in self.fish_pop:
             for index, mcnugget in enumerate(food_positions):
-                if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<10:
+                if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<EAT_RADIUS**2:
                     food_positions.remove(mcnugget)
                     food.remove_food(index)
                     f.eaten_food += 1

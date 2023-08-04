@@ -12,10 +12,13 @@ VERBOSE = False
 N_FISH = 25
 
 # Set number of food
-N_FOOD = 70
+N_FOOD = 75
 
 # Set food probability
 FOOD_PROB = 0.2
+
+# Set food radius
+EAT_RADIUS = 4
 
 # Hunt radius
 HUNT_RADIUS = 300
@@ -27,18 +30,18 @@ ANGLE_MAG = 0.2
 REPRODUCTION_TIMER = 1000
 
 # Set generations before screen
-GEN_BEFORE_SCREEN = 40
+GEN_BEFORE_SCREEN = 20
 
 # Parent selection
 PARENTS = 5
 
 # Mutation
-MUTATION_MAG = 0.1
-MUTATION_PROB = 0.2
+MUTATION_MAG = 0.2
+MUTATION_PROB = 0.4
 #GENES_TO_MUTATE = 5
 
 # Crossover
-CROSSOVER = True
+CROSSOVER = False
 
 # Activation function
 ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
