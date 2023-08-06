@@ -12,8 +12,12 @@ def relu(x):
 def leaky_relu(x):
     return max(0.01*x, x)
 
+# Only for 'angle decisions'
 def act_function_input(x):
     return x
+
+def act_function_output(x):
+    return sigmoid(x)
 
 def act_function_hidden(x):
     if ACTIVATION_FUNCTION == "tanh":
@@ -26,9 +30,6 @@ def act_function_hidden(x):
         return relu(x)
     elif ACTIVATION_FUNCTION == "leaky_relu":
         return leaky_relu(x)
-    
-def act_function_output(x):
-    return sigmoid(x)
 
 class NN():
     def __init__(self, nodes: list):
@@ -40,20 +41,31 @@ class NN():
         self.weights = [[] for _ in range(len(self.nodes) - 1)]
 
     def activate(self, inputs):
-        self.activations[0] = [act_function_input(inputs[i]) for i in range(self.nodes[0])]
-        for i in range(1, len(self.nodes)-1):
-            self.activations[i] = [0. for _ in range(self.nodes[i])]
-            for j in range(self.nodes[i]):
-                sum = 0  # self.weights[i - 1][j][0]
-                for k in range(self.nodes[i - 1]):
-                    sum += self.activations[i - 1][k - 1] * self.weights[i - 1][j][k]
-                self.activations[i][j] = act_function_hidden(sum)
-        self.activations[-1] = [0. for _ in range(self.nodes[-1])]
-        for i in range(self.nodes[-1]):
-            sum = 0
-            for j in range(self.nodes[-2]):
-                sum += self.activations[-2][j] * self.weights[-1][i][j]
-            self.activations[-1][i] = act_function_output(sum)
+        if NETWORK_CONFIGURATION == 'angle_decisions':
+            self.activations[0] = [act_function_input(inputs[i]) for i in range(self.nodes[0])]
+            for i in range(1, len(self.nodes)-1):
+                self.activations[i] = [0. for _ in range(self.nodes[i])]
+                for j in range(self.nodes[i]):
+                    sum = 0  # self.weights[i - 1][j][0]
+                    for k in range(self.nodes[i - 1]):
+                        sum += self.activations[i - 1][k - 1] * self.weights[i - 1][j][k]
+                    self.activations[i][j] = act_function_hidden(sum)
+            self.activations[-1] = [0. for _ in range(self.nodes[-1])]
+            for i in range(self.nodes[-1]):
+                sum = 0
+                for j in range(self.nodes[-2]):
+                    sum += self.activations[-2][j] * self.weights[-1][i][j]
+                self.activations[-1][i] = act_function_output(sum)
+        
+        else:
+            self.activations[0] = [act_function_hidden(inputs[i]) for i in range(self.nodes[0])]
+            for i in range(1, len(self.nodes)):
+                self.activations[i] = [0. for _ in range(self.nodes[i])]
+                for j in range(self.nodes[i]):
+                    sum = 0  # self.weights[i - 1][j][0]
+                    for k in range(self.nodes[i - 1]):
+                        sum += self.activations[i - 1][k - 1] * self.weights[i - 1][j][k]
+                    self.activations[i][j] = act_function_hidden(sum)
         
         return np.array(self.activations[-1])
 

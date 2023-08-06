@@ -30,7 +30,7 @@ class Fish:
 
     def eval(self):
         if NETWORK_CONFIGURATION == 'angle_decisions':
-            inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]#, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
+            inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]
             if COESION:
                 inputs.append(self.center_neighborhood_angle)
 
@@ -78,9 +78,7 @@ class Fish:
     def draw(self, screen, total_food):
         pygame.draw.circle(screen, self.color, (self.position_x, self.position_y), self.radius)
         pygame.draw.line(screen, (255, 255, 255), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.angle), self.position_y - 50 * math.sin(self.angle)))
-        # pygame.draw.line(screen, (255,0,0), (self.position_x, self.position_y), (self.position_x + 50 * math.cos(self.center_neighborhood_angle), self.position_y - 50 * math.sin(self.center_neighborhood_angle)))
         pygame.draw.rect(screen, (0, 255, 0), (self.position_x-50, self.position_y + 20, (self.eaten_food/total_food)*100, 5))
-        #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
 
     def get_genotype(self, mutation=True):
         if mutation:
