@@ -26,3 +26,8 @@ class Food_pop:
 
     def __len__(self):
         return len(self.food_particles)
+    
+    def respawn_food(self):
+        self.food_particles = []
+        for _ in range(N_FOOD):
+            self.food_particles.append(Food_particle())

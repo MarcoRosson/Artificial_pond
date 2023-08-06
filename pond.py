@@ -1,9 +1,4 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import time
 import pygame
-import random
-import math
 from models.Fish_pop import Fish_pop
 from models.Food_pop import Food_pop
 from pygame_widgets.slider import Slider
@@ -25,9 +20,8 @@ for _ in range(non_screen_iterations):
     if len(food) < N_FOOD:
         food.spawn_food()
         
-graph.save_graph_jpg("graph_crossover_2")
+graph.save_graph_jpg(f"graph_{NETWORK_CONFIGURATION}")
 
-# Initialize Pygame
 pygame.init()
 
 # Set the screen size
@@ -54,9 +48,6 @@ while running:
     # Update and draw particles
     population.fish_pop_step(food, screen)
     
-    if VERBOSE:
-        population.dead_born()
-    
     food.draw(screen)
 
     if len(food) < N_FOOD:
@@ -65,9 +56,4 @@ while running:
     pygame.display.flip()
     clock.tick(slider.getValue()) # FPS
 
-    # iterations += 1
-    # if iterations >= 1000000:
-    #     running = False
-
-# Quit Pygame
 pygame.quit()
