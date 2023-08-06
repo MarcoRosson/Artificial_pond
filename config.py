@@ -25,11 +25,13 @@ EAT_RADIUS = 4
 # Hunt radius
 HUNT_RADIUS = 300
 
+WALL_RADIUS = 100
+
 # Angle magnitude
 ANGLE_MAG = 0.2
 
 # Set generations before screen
-GEN_BEFORE_SCREEN = 20
+GEN_BEFORE_SCREEN = 10
 
 # Parent selection
 PARENTS = 5
@@ -51,11 +53,7 @@ LIFE_LOSS_SPEED = 0.05 # Life loss per speed
 
 # Neighborhood Center
 NEIGHBORHOOD_TYPE_CENTER = "local" # "global", "local"
-NEIGHBORHOOD_RADIUS_CENTER = 300
-
-# Neighborhood Angle
-NEIGHBORHOOD_TYPE_ANGLE = "local" # "global", "local"
-NEIGHBORHOOD_RADIUS_ANGLE = 200
+SOCIAL_RADIUS = 300
 
 
 # DO NOT MODIFY THE FOLLOWING LINES
@@ -65,10 +63,17 @@ if NETWORK_CONFIGURATION == 'angle_decisions':
     FISH_SPEED = 3
     REPRODUCTION_TIMER = 1000
 
-    if COESION or ALIGNMENT:
+    if COESION:
         NETWORK_LAYERS = [4, 3, 3]
-    if COESION and ALIGNMENT:
-        NETWORK_LAYERS = [5, 3, 3]
+
+elif NETWORK_CONFIGURATION == 'sensors_decisions':
+
+    NETWORK_LAYERS = [5, 3, 3, 4]
+    FISH_SPEED = 1
+    REPRODUCTION_TIMER = 500
+
+    if COESION:
+        NETWORK_LAYERS = [9, 3, 3, 4]
 
     
     

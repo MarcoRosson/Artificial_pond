@@ -5,8 +5,6 @@ from config import *
 class Fish_pop:
     def __init__(self):
         self.fish_pop = []
-        self.born = 0
-        self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
             weights = [np.random.random() for _ in range(sum(NETWORK_LAYERS[i] * NETWORK_LAYERS[i+1] for i in range(len(NETWORK_LAYERS)-1)))]
@@ -21,7 +19,11 @@ class Fish_pop:
             self.draw(screen)
         self.eat_food(food)
         self.check_food(food)
-        self.check_neighborhood()
+        if NETWORK_CONFIGURATION == 'angle_decisions':
+            self.check_neighborhood()
+        elif NETWORK_CONFIGURATION == 'sensors_decisions':
+            self.check_neighbors()
+            self.check_walls()
         self.eval_pop()
         self.update_timer()
         if self.count_timer == 0:
@@ -33,21 +35,6 @@ class Fish_pop:
     def eval_pop(self):
         for f in self.fish_pop:
             f.eval()
-
-    def reproduce(self, weights, gen):
-        r = 255 - gen*5
-        g = 255 - gen*10
-        b = 255 - gen*50
-
-        if r < 6:
-            r = 255
-        if g < 11:
-            g = 255
-        if b < 51:
-            b = 255
-        color = (r,g,b)
-        self.fish_pop.append(Fish(weights, color, gen+1))
-        self.born += 1
 
     def update_position(self):
         for f in self.fish_pop:
@@ -65,7 +52,8 @@ class Fish_pop:
         food_positions = food.get_positions()
         for f in self.fish_pop:
             min_distance = HUNT_RADIUS*2
-            f.food_angle = f.angle
+            f.food_sensors = [0, 0, 0, 0]
+            f.food_angle = f.angle % (2*np.pi)
             for mcnugget in food_positions:
                 if ((f.position_x-mcnugget[0])**2 + (f.position_y-mcnugget[1])**2)<HUNT_RADIUS**2:
                     distance = np.sqrt((mcnugget[0]-f.position_x)**2 + (mcnugget[1]-f.position_y)**2)
@@ -73,6 +61,27 @@ class Fish_pop:
                         f.food_angle = - np.arctan2(mcnugget[1]-f.position_y, mcnugget[0]-f.position_x)
                         min_distance = distance
             f.food_distance = min_distance
+            if NETWORK_CONFIGURATION == 'sensors_decisions':
+                relative_angle = (f.angle - f.food_angle) % (2*np.pi)
+                if relative_angle >=7*np.pi/4 and relative_angle < np.pi/4 :
+                    f.food_sensors[0] = sigmoid(min_distance)
+                elif relative_angle < 3*np.pi/4 and relative_angle >= np.pi/4 :
+                    f.food_sensors[1] = sigmoid(min_distance)
+                elif relative_angle >= 3*np.pi/4 and relative_angle < 5*np.pi/4:
+                    f.food_sensors[2] = sigmoid(min_distance)
+                elif relative_angle >= 5*np.pi/4 and relative_angle < 7*np.pi/4:
+                    f.food_sensors[3] = sigmoid(min_distance)
+
+    def check_walls(self):
+        for f in self.fish_pop:
+            if f.position_x > WIDTH - WALL_RADIUS:
+                f.wall_sensor = sigmoid(f.position_x - WIDTH + WALL_RADIUS)
+            elif f.position_x < WALL_RADIUS:
+                f.wall_sensor = sigmoid(f.position_x - WALL_RADIUS)
+            elif f.position_y > HEIGHT - WALL_RADIUS:
+                f.wall_sensor = sigmoid(f.position_y - HEIGHT + WALL_RADIUS)
+            elif f.position_y < WALL_RADIUS:    
+                f.wall_sensor = sigmoid(f.position_y - WALL_RADIUS)
 
     def eat_food(self, food):
         food_positions = food.get_positions()
@@ -142,8 +151,38 @@ class Fish_pop:
     def check_neighborhood(self):
         for f in self.fish_pop:
             f.check_neighborhood(self.fish_pop)
+
+    def check_neighbors(self):
+        neighbors_positions = []
+        for f in self.fish_pop:
+            neighbors_positions.append([f.position_x, f.position_y])
+        for f in self.fish_pop:
+            f.fish_sensors = [0,0,0,0]
+            f.fish_angle = f.angle % (2*np.pi)
+            min_distance = SOCIAL_RADIUS*4
+            fish_per_quadrant = [0,0,0,0]
+            for friend in neighbors_positions:
+                if ((f.position_x-friend[0])**2 + (f.position_y-friend[1])**2)<SOCIAL_RADIUS**2:
+                    f.fish_angle = - np.arctan2(friend[1]-f.position_y, friend[0]-f.position_x)
+                    relative_angle = (f.angle - f.fish_angle) % (2*np.pi)
+                    if relative_angle >=7*np.pi/4 and relative_angle < np.pi/4 :
+                        fish_per_quadrant[0] += 1
+                    elif relative_angle < 3*np.pi/4 and relative_angle >= np.pi/4 :
+                        fish_per_quadrant[1] += 1
+                    elif relative_angle >= 3*np.pi/4 and relative_angle < 5*np.pi/4:
+                        fish_per_quadrant[2]+= 1
+                    elif relative_angle >= 5*np.pi/4 and relative_angle < 7*np.pi/4:
+                        fish_per_quadrant[3]+= 1
+
+            f.fish_sensors[0] = sigmoid(fish_per_quadrant[0])
+            f.fish_sensors[1] = sigmoid(fish_per_quadrant[1])
+            f.fish_sensors[2] = sigmoid(fish_per_quadrant[2])
+            f.fish_sensors[3] = sigmoid(fish_per_quadrant[3])
         
     def update_timer(self):
         self.count_timer += 1
         if self.count_timer >= REPRODUCTION_TIMER:
             self.count_timer = 0
+
+def sigmoid(x):
+    return 1/(1 + np.exp(-x))
