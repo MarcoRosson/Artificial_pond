@@ -9,7 +9,7 @@ class Fish_pop:
         self.dead = 0
         self.count_timer = 0
         for _ in range(N_FISH):
-            weights = [np.random.random() for _ in range(18)]
+            weights = [np.random.random() for _ in range(sum(NETWORK_LAYERS[i] * NETWORK_LAYERS[i+1] for i in range(len(NETWORK_LAYERS)-1)))]
             for i, _ in enumerate(weights):
                 if np.random.random() < 0.5:
                     weights[i] *= -1
@@ -127,8 +127,6 @@ class Fish_pop:
         for fish in best_fishes:
             fish.eaten_food = 0
             fish.penalty = 0
-            if VERBOSE:
-                print("Fish ", fish.get_genotype(mutation=False))
             for _ in range(n_offspring):
                 weights = fish.get_genotype(mutation=True)
                 #print("Weights: ", weights)

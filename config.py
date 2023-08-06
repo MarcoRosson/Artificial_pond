@@ -1,12 +1,14 @@
+# Type of Network
+NETWORK_CONFIGURATION = 'angle_decisions' # 'angle_decisions', 'sensors_decisions', 'direct_angle'
+COESION = False # True, False
+ALIGNMENT = False # True, False
+
 # Sets the width and height of the game window
 WIDTH = 1000
 HEIGHT = 800
 
 # Set FPS
 FPS = 60
-
-# Set screen output
-VERBOSE = False
 
 # Set number of fish
 N_FISH = 25
@@ -25,9 +27,6 @@ HUNT_RADIUS = 300
 
 # Angle magnitude
 ANGLE_MAG = 0.2
-
-# Set reproduction timer
-REPRODUCTION_TIMER = 1000
 
 # Set generations before screen
 GEN_BEFORE_SCREEN = 20
@@ -58,9 +57,18 @@ NEIGHBORHOOD_RADIUS_CENTER = 300
 NEIGHBORHOOD_TYPE_ANGLE = "local" # "global", "local"
 NEIGHBORHOOD_RADIUS_ANGLE = 200
 
-# Set Test mode
-TEST = False
-if TEST:
-    VERBOSE = True
-    FPS = 3
-    N_FISH = 2
+
+# DO NOT MODIFY THE FOLLOWING LINES
+if NETWORK_CONFIGURATION == 'angle_decisions':
+    
+    NETWORK_LAYERS = [3, 3, 3]
+    FISH_SPEED = 3
+    REPRODUCTION_TIMER = 1000
+
+    if COESION or ALIGNMENT:
+        NETWORK_LAYERS = [4, 3, 3]
+    if COESION and ALIGNMENT:
+        NETWORK_LAYERS = [5, 3, 3]
+
+    
+    

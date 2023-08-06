@@ -8,13 +8,13 @@ from config import *
 class Fish:
     def __init__(self, weights, color=(255, 255, 255), gen=0):
         self.genotype = weights
-        self.speed = 3
+        self.speed = FISH_SPEED
         self.angle = np.random.random() * 2 * np.pi
         self.position_x = random.randint(0, WIDTH)
         self.position_y = random.randint(0, HEIGHT)
         self.color = color
         self.radius = 6
-        self.NN = NN([3, 3, 3])
+        self.NN = NN(NETWORK_LAYERS.copy())
         self.NN.set_weights(self.genotype)
         self.food_distance = 0
         self.food_angle = 0
@@ -28,23 +28,23 @@ class Fish:
         self.penalty = 0
 
     def eval(self):
-        #inputs = [self.food_distance/HUNT_RADIUS, ((self.food_angle-self.angle)/(2*math.pi))]
         self.get_distance_from_boundaries()
-        inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]#, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
-        outputs = self.NN.activate(inputs)
-        choice = np.argmax(outputs)
-        if choice == 0:
-            self.angle += ANGLE_MAG
-            if VERBOSE:
-                print("left")
-        if choice == 1:
-            self.angle -= ANGLE_MAG
-            if VERBOSE:
-                print("right")
-        if choice == 2:
-            if VERBOSE:
-                print("nothing")
-        self.angle = self.angle % (2*np.pi)
+        if NETWORK_CONFIGURATION == 'angle_decisions':
+            inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]#, self.center_neighborhood_angle]#, self.center_neighborhood_angle]
+            if COESION:
+                inputs.append(self.center_neighborhood_angle)
+            if ALIGNMENT:
+                inputs.append(self.align_neighborhood_angle)
+
+            outputs = self.NN.activate(inputs)
+            choice = np.argmax(outputs)
+            if choice == 0:
+                self.angle += ANGLE_MAG
+            if choice == 1:
+                self.angle -= ANGLE_MAG
+            if choice == 2:
+                pass
+            self.angle = self.angle % (2*np.pi)
         # if inputs[1] != 0 or inputs[0] != 0:
         #     self.decisions.append((outputs[0] - (inputs[1]-inputs[0])))
         # else:
@@ -90,8 +90,6 @@ class Fish:
         #pygame.draw.rect(screen, (255, 0, 0), (self.position_x-50, self.position_y + 30, self.fitness, 5))
 
     def get_genotype(self, mutation=True):
-        if VERBOSE:
-            print("Old genotype:", self.genotype)
         if mutation:
             self.get_fitness()
             genes_to_mutate = int(len(self.genotype) * MUTATION_PROB)
@@ -115,8 +113,6 @@ class Fish:
                     new_genotype[i] += np.random.normal(0, MUTATION_MAG/5)
                 else:
                     new_genotype[i] += np.random.normal(0, MUTATION_MAG)
-            if VERBOSE:
-                print("New genotype:", new_genotype)
             return new_genotype
         else:
             return self.genotype
