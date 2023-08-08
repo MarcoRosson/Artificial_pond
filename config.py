@@ -1,6 +1,6 @@
 # Type of Network
 NETWORK_CONFIGURATION = 'angle_decisions' # 'angle_decisions', 'sensors_decisions'
-COESION = False # True, False
+COHESION = False # True, False
 
 # Set screen size and FPS
 WIDTH = 1000
@@ -28,7 +28,7 @@ MUTATION_PROB = 0.6
 CROSSOVER = False
 
 # Set social parameters
-NEIGHBORHOOD_TYPE_CENTER = "local" # "global", "local"
+NEIGHBORHOOD_TYPE = "local" # "global", "local"
 SOCIAL_RADIUS = 300
 
 # Set generations before screen visualization
@@ -45,7 +45,7 @@ if NETWORK_CONFIGURATION == 'angle_decisions':
     REPRODUCTION_TIMER = 1000
     ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
 
-    if COESION:
+    if COHESION:
         NETWORK_LAYERS = [4, 3, 3]
 
 elif NETWORK_CONFIGURATION == 'sensors_decisions':
@@ -55,7 +55,7 @@ elif NETWORK_CONFIGURATION == 'sensors_decisions':
     REPRODUCTION_TIMER = 500
     ACTIVATION_FUNCTION = "relu" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
 
-    if COESION:
+    if COHESION:
         NETWORK_LAYERS = [9, 3, 3, 4]
 
     

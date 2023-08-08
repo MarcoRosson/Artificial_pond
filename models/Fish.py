@@ -31,7 +31,7 @@ class Fish:
     def eval(self):
         if NETWORK_CONFIGURATION == 'angle_decisions':
             inputs = [self.angle, self.food_angle, self.food_distance/HUNT_RADIUS]
-            if COESION:
+            if COHESION:
                 inputs.append(self.center_neighborhood_angle)
 
             outputs = self.NN.activate(inputs)
@@ -45,7 +45,7 @@ class Fish:
 
         elif NETWORK_CONFIGURATION == 'sensors_decisions':
             inputs = [self.food_sensors[0],self.food_sensors[1],self.food_sensors[2],self.food_sensors[3],self.wall_sensor]
-            if COESION:
+            if COHESION:
                 inputs = [self.food_sensors[0],self.food_sensors[1],self.food_sensors[2],self.food_sensors[3],
                     self.fish_sensors[0],self.fish_sensors[1],self.fish_sensors[2],self.fish_sensors[3],
                     self.wall_sensor]
@@ -109,7 +109,7 @@ class Fish:
             return self.genotype
         
     def check_neighborhood(self, fish_pop):
-        if NEIGHBORHOOD_TYPE_CENTER == 'global':
+        if NEIGHBORHOOD_TYPE == 'global':
             global_position_x = 0
             global_position_y = 0
             for f in fish_pop:
@@ -119,7 +119,7 @@ class Fish:
             global_position_y /= len(fish_pop)
             self.center_neighborhood_angle = - np.arctan2(global_position_y-self.position_y, global_position_x-self.position_x)
 
-        elif NEIGHBORHOOD_TYPE_CENTER == 'local':
+        elif NEIGHBORHOOD_TYPE == 'local':
             neighborhood_fish = []
             for f in fish_pop:
                 if ((f.position_x-self.position_x)**2 + (f.position_y-self.position_y)**2)<SOCIAL_RADIUS**2:
