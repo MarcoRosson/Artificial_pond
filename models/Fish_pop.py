@@ -14,6 +14,13 @@ class Fish_pop:
                     weights[i] *= -1
             self.fish_pop.append(Fish(weights))
 
+        self.hall_of_fame = {
+            'fitness': 0,
+            'weights': self.fish_pop[0].get_genotype(mutation=False),
+            'gen': 0,
+            'color': self.fish_pop[0].color 
+        }
+
     def fish_pop_step(self, food, screen=None, graph=None):
         self.update_position()
         if screen:
@@ -126,7 +133,16 @@ class Fish_pop:
                         new_weights.append(weights_1[j])
                     else:
                         new_weights.append(weights_2[j])
-                new_pop.append(Fish(new_weights, best_fishes[0].color, best_fishes[0].gen+1))
+                new_pop.append(Fish(new_weights, best_fishes[0].color, best_fishes[0].gen))
+
+        if HALL_OF_FAME:
+            if best_fishes[0].get_fitness() > self.hall_of_fame['fitness']:
+                self.hall_of_fame['fitness'] = best_fishes[0].get_fitness()
+                self.hall_of_fame['weights'] = best_fishes[0].get_genotype(mutation=False)
+                self.hall_of_fame['gen'] = best_fishes[0].gen
+                self.hall_of_fame['color'] = best_fishes[0].color
+                print(f"Best fitness: {self.hall_of_fame['fitness']:.2f}, gen: {self.hall_of_fame['gen']}")
+            new_pop.append(Fish(self.hall_of_fame['weights'], self.hall_of_fame['color'], self.hall_of_fame['gen']))
 
         for fish in best_fishes:
             fish.eaten_food = 0
@@ -135,6 +151,7 @@ class Fish_pop:
                 weights = fish.get_genotype(mutation=True)
                 new_pop.append(Fish(weights, fish.color, fish.gen+1))
         new_pop.extend(best_fishes)
+        
         self.fish_pop = new_pop
 
 
@@ -149,7 +166,6 @@ class Fish_pop:
         for f in self.fish_pop:
             f.fish_sensors = [0,0,0,0]
             f.fish_angle = f.angle % (2*np.pi)
-            min_distance = SOCIAL_RADIUS*4
             fish_per_quadrant = [0,0,0,0]
             for friend in neighbors_positions:
                 if ((f.position_x-friend[0])**2 + (f.position_y-friend[1])**2)<SOCIAL_RADIUS**2:

@@ -3,8 +3,8 @@ NETWORK_CONFIGURATION = 'angle_decisions' # 'angle_decisions', 'sensors_decision
 COHESION = False # True, False
 
 # Set screen size and FPS
-WIDTH = 1000
-HEIGHT = 800
+WIDTH = 1200
+HEIGHT = 1000
 FPS = 60
 
 # Population parameters
@@ -23,9 +23,10 @@ WALL_RADIUS = 100
 ANGLE_MAG = 0.2
 
 # Set reproduction parameters
-MUTATION_MAG = 0.2
-MUTATION_PROB = 0.6
+MUTATION_MAG = 0.1
+MUTATION_PROB = 0.4
 CROSSOVER = False
+HALL_OF_FAME = True
 
 # Set social parameters
 NEIGHBORHOOD_TYPE = "local" # "global", "local"
@@ -40,13 +41,13 @@ GEN_BEFORE_SCREEN = 20
 # DO NOT MODIFY THE FOLLOWING LINES
 if NETWORK_CONFIGURATION == 'angle_decisions':
     
-    NETWORK_LAYERS = [3, 3, 3]
+    NETWORK_LAYERS = [3, 3, 3, 3]
     FISH_SPEED = 3
     REPRODUCTION_TIMER = 1000
     ACTIVATION_FUNCTION = "linear" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
 
     if COHESION:
-        NETWORK_LAYERS = [4, 3, 3]
+        NETWORK_LAYERS = [4, 3, 3, 3]
 
 elif NETWORK_CONFIGURATION == 'sensors_decisions':
 
