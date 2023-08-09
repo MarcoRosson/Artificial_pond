@@ -34,34 +34,24 @@ class Fish:
             if COHESION:
                 inputs.append(self.center_neighborhood_angle)
 
-            outputs = self.NN.activate(inputs)
-            choice = np.argmax(outputs)
-            if choice == 0:
-                self.angle += ANGLE_MAG
-            if choice == 1:
-                self.angle -= ANGLE_MAG
-            if choice == 2:
-                pass
-
         elif NETWORK_CONFIGURATION == 'sensors_decisions':
             inputs = [self.food_sensors[0],self.food_sensors[1],self.food_sensors[2],self.food_sensors[3],self.wall_sensor]
             if COHESION:
                 inputs = [self.food_sensors[0],self.food_sensors[1],self.food_sensors[2],self.food_sensors[3],
                     self.fish_sensors[0],self.fish_sensors[1],self.fish_sensors[2],self.fish_sensors[3],
                     self.wall_sensor]
-            outputs = self.NN.activate(inputs)
-            choice = np.argmax(outputs)
-            if choice   == 0:
-                self.angle = self.angle
-            elif choice == 1:
-                self.angle += ANGLE_MAG
-            elif choice == 2:
-                self.angle -= ANGLE_MAG
-            elif choice == 3:
-                self.angle += np.pi
+
+        outputs = self.NN.activate(inputs)
+        choice = np.argmax(outputs)
+        if choice   == 0:
+            self.angle = self.angle
+        elif choice == 1:
+            self.angle += ANGLE_MAG
+        elif choice == 2:
+            self.angle -= ANGLE_MAG
 
         self.angle = self.angle % (2*np.pi)
-        
+
 
     def update_position(self):
         if self.position_x > WIDTH:
@@ -87,7 +77,7 @@ class Fish:
             new_genotype = self.genotype.copy()
             possible_choices = np.arange(len(self.genotype))
             final_choice = random.sample(list(possible_choices), genes_to_mutate)
-                
+
             for i in iter(final_choice):
                 #choice = np.random.choice([True, False], p=[MUTATION_PROB, 1-MUTATION_PROB])
                 if self.fitness > 20:
@@ -107,7 +97,7 @@ class Fish:
             return new_genotype
         else:
             return self.genotype
-        
+
     def check_neighborhood(self, fish_pop):
         if NEIGHBORHOOD_TYPE == 'global':
             global_position_x = 0
@@ -135,11 +125,11 @@ class Fish:
                 self.center_neighborhood_angle = - np.arctan2(neighborhood_position_y-self.position_y, neighborhood_position_x-self.position_x)
             else:
                 self.center_neighborhood_angle = 0
-        
+
     def get_fitness(self):
         fitness = self.eaten_food
-        self.fitness = fitness 
+        self.fitness = fitness
         return fitness
-    
+
     def get_eaten_food(self):
         return self.eaten_food

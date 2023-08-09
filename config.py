@@ -3,8 +3,8 @@ NETWORK_CONFIGURATION = 'angle_decisions' # 'angle_decisions', 'sensors_decision
 COHESION = False # True, False
 
 # Set screen size and FPS
-WIDTH = 1200
-HEIGHT = 1000
+WIDTH = 1000
+HEIGHT = 800
 FPS = 60
 
 # Population parameters
@@ -51,13 +51,13 @@ if NETWORK_CONFIGURATION == 'angle_decisions':
 
 elif NETWORK_CONFIGURATION == 'sensors_decisions':
 
-    NETWORK_LAYERS = [5, 3, 3, 4]
+    NETWORK_LAYERS = [5, 3, 3, 3]
     FISH_SPEED = 1
     REPRODUCTION_TIMER = 500
     ACTIVATION_FUNCTION = "relu" # "tanh", "sigmoid", "linear", "relu", "leaky_relu"
 
     if COHESION:
-        NETWORK_LAYERS = [9, 3, 3, 4]
+        NETWORK_LAYERS = [9, 3, 3, 3]
 
     
     

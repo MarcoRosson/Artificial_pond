@@ -141,7 +141,6 @@ class Fish_pop:
                 self.hall_of_fame['weights'] = best_fishes[0].get_genotype(mutation=False)
                 self.hall_of_fame['gen'] = best_fishes[0].gen
                 self.hall_of_fame['color'] = best_fishes[0].color
-                print(f"Best fitness: {self.hall_of_fame['fitness']:.2f}, gen: {self.hall_of_fame['gen']}")
             new_pop.append(Fish(self.hall_of_fame['weights'], self.hall_of_fame['color'], self.hall_of_fame['gen']))
 
         for fish in best_fishes:
