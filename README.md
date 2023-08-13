@@ -1,5 +1,5 @@
 # Artificial_pond
-Repository for Bio-inspired AI project
+This project involves a hands-on implementation of Artificial Life Simulation. Our aim is to study a population's progression from an initial state of being unable to gather food, to gradually acquiring the ability to move, by means of evolutionary algorithms, in increasingly sophisticated patterns. The primary emphasis lies in the field of Neuro-Evolution. Specifically, we will explore diverse methods of constructing a proficient Feed-Forward Neural Network capable of making environment-based decisions. Throughout the project, we will experiment with various parameters, closely observing their effects on performance and evolutionary behavior.
 
 ## Installation
 In order to run the project, you need to install the following packages: 
