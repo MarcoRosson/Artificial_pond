@@ -23,7 +23,10 @@ for _ in range(non_screen_iterations):
         food.spawn_food()
         
 # Save the graph
-graph.save_graph_jpg(f"graph_{NETWORK_CONFIGURATION}")
+if COHESION:
+    graph.save_graph_jpg(f"graph_{NETWORK_CONFIGURATION}_cohesion")
+else:
+    graph.save_graph_jpg(f"graph_{NETWORK_CONFIGURATION}")
 
 # Initialize the screen
 pygame.init()

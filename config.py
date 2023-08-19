@@ -23,8 +23,8 @@ WALL_RADIUS = 100
 ANGLE_MAG = 0.2
 
 # Set reproduction parameters
-MUTATION_MAG = 0.1
-MUTATION_PROB = 0.4
+MUTATION_MAG = 0.2
+MUTATION_PROB = 0.6
 CROSSOVER = False
 HALL_OF_FAME = True
 
